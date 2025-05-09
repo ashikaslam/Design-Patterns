@@ -1,4 +1,4 @@
-# document_editor.py
+
 
 class Document:
     def __init__(self):
