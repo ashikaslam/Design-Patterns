@@ -84,4 +84,3 @@ The Template Method pattern is ideal when multiple subclasses share the same wor
 
 ---
 
-Next: Check out the `template_method_example.py` file for a hands-on implementation in Python!
