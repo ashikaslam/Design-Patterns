@@ -1,71 +1,74 @@
-# Adapter Design Pattern - Guide
+# Composite Design Pattern - Guide
 
 ## Definition
 
-The Adapter Pattern is a structural design pattern that allows incompatible interfaces to work together. It acts as a bridge between two incompatible interfaces by wrapping one interface (the adaptee) and exposing a different interface that the client expects.
+The **Composite Pattern** is a structural design pattern that lets you compose objects into tree-like structures to represent part-whole hierarchies. It allows clients to treat individual objects and compositions of objects uniformly.
 
 ---
 
 ## Purpose and Core Idea
 
-The core idea is to convert the interface of a class into another interface that clients expect. This enables classes to work together that otherwise could not because of incompatible interfaces.
+The core idea is to treat both single (leaf) objects and compositions (branches or containers) the same way. This is especially useful when working with tree structures, such as a GUI, a file system, or nested hierarchies.
 
 ---
 
-## Real-World Analogy
+## Real-World Use Cases
 
-* A power adapter converts one plug shape/voltage to another so your laptop can work in another country.
+### Real-World Examples:
 
----
+* A file system where directories can contain files or other directories.
+* Company structures: Employees might be individuals or managers who manage other employees.
+* Menu systems in UIs: Menu items and submenus.
 
-## Software Use Cases
+### In Software:
 
-* Integrating legacy code into a modern system
-* Connecting third-party libraries with different interfaces
-* Wrapping APIs or SDKs to fit internal interfaces
+* GUI components: Panels can contain buttons, labels, or other panels.
+* Scene graphs in game development.
+* XML/HTML document object models.
 
 ---
 
 ## Advantages
 
-* Promotes code reusability
-* Enables decoupling between classes
-* Supports single responsibility principle
-* Allows using existing classes without modifying their code
+* Makes it easy to add new types of components.
+* Uniformity: Treat leaf and composite nodes uniformly.
+* Simplifies client code because it doesn't have to differentiate between individual and composite objects.
+
+## When to Use
+
+* When you want to represent part-whole hierarchies.
+* When you want clients to treat individual objects and compositions uniformly.
+* When tree structures or recursive behavior is involved.
 
 ---
 
 ## Disadvantages
 
-* Can add extra complexity
-* Excessive use can make code harder to understand
-* Might lead to too many layers of abstraction
+* Can make the system overly general and harder to restrict behavior (e.g., some operations might not make sense on leaf nodes).
+* Can make debugging and maintenance more difficult.
 
 ---
 
-## UML/Structure (Text Format)
+## UML Structure (Text Description)
 
 ```
-Client ---> Target Interface <--- Adapter ---> Adaptee (existing/legacy class)
+Component (Abstract class or interface)
+├── Leaf (Concrete class)
+└── Composite (Concrete class that contains children of type Component)
 ```
 
-* **Client**: Uses the Target interface
-* **Target**: Defines the interface expected by the client
-* **Adapter**: Converts the interface of the Adaptee into the Target interface
-* **Adaptee**: Existing interface that needs adapting
+* **Component**: Declares common operations (e.g., `display()`)
+* **Leaf**: Implements base behavior (no children)
+* **Composite**: Contains a list of Components and delegates work to children
 
 ---
 
 ## Summary / Takeaway
 
-The Adapter Pattern is perfect for integrating components that have incompatible interfaces. It helps bridge differences between old and new systems or external APIs and internal logic, without changing the original code.
+* The Composite Pattern is ideal for working with tree-like recursive structures.
+* It promotes uniformity in your design by treating simple and composite objects similarly.
+* Be cautious not to overgeneralize behaviors for all components.
 
-Use it when:
+> "Use the Composite Pattern when you need to build tree structures and want to treat elements uniformly regardless of their depth or type."
 
-* You want to reuse an existing class, but its interface doesn't match what you need
-* You need to interact with third-party or legacy code with different interfaces
-
-Avoid it when:
-
-* You can refactor the source or client code instead
-* The Adapter would overly complicate the codebase
+---
