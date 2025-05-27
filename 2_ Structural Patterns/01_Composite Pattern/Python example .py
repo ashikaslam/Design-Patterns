@@ -1,90 +1,62 @@
 """
-Composite Design Pattern - Python Example
+Adapter Design Pattern - Python Example
 
-Scenario: File System Hierarchy
-We simulate a file system with files and directories.
-Both files and directories support a common method: display().
-Directories can contain other files or directories.
+Scenario: A drawing application needs to use a standard Shape interface,
+but we have a legacy Rectangle class that doesn't match it.
+The Adapter pattern helps integrate the legacy class without modifying it.
 """
 
-from abc import ABC, abstractmethod
-
-class FileSystemComponent(ABC):
+# Target Interface
+class Shape:
     """
-    Abstract Component:
-    Declares the interface for all concrete components.
-    Both File and Directory will implement this.
+    The interface that the client expects.
+    All shapes should implement a draw() method.
     """
-    @abstractmethod
-    def display(self, indent=0):
-        pass
+    def draw(self):
+        raise NotImplementedError("draw() must be implemented by subclasses")
 
-class File(FileSystemComponent):
+
+# Adaptee (Legacy Class)
+class LegacyRectangle:
     """
-    Leaf Component:
-    Represents files in the file system. Has no children.
+    A legacy class that does not follow the Shape interface.
+    It uses a different method name and parameter style.
     """
-    def __init__(self, name):
-        self.name = name
+    def __init__(self, x1, y1, x2, y2):
+        self.x1 = x1
+        self.y1 = y1
+        self.x2 = x2
+        self.y2 = y2
 
-    def display(self, indent=0):
-        print('  ' * indent + f"File: {self.name}")
+    def draw_rectangle(self):
+        print(f"Drawing rectangle from ({self.x1}, {self.y1}) to ({self.x2}, {self.y2})")
 
-class Directory(FileSystemComponent):
+
+# Adapter
+class RectangleAdapter(Shape):
     """
-    Composite Component:
-    Represents directories which can contain other files or directories.
+    Adapter that allows LegacyRectangle to be used as a Shape.
+    Implements the draw() method expected by the client.
     """
-    def __init__(self, name):
-        self.name = name
-        self.children = []  # list of FileSystemComponent
+    def __init__(self, legacy_rectangle):
+        self.legacy_rectangle = legacy_rectangle
 
-    def add(self, component):
-        """Add a file or directory to this directory."""
-        self.children.append(component)
+    def draw(self):
+        # Convert the draw() call to draw_rectangle()
+        self.legacy_rectangle.draw_rectangle()
 
-    def remove(self, component):
-        """Remove a file or directory from this directory."""
-        self.children.remove(component)
 
-    def display(self, indent=0):
-        print('  ' * indent + f"Directory: {self.name}")
-        for child in self.children:
-            child.display(indent + 1)
-
-# Example Usage
+# Client Code
 if __name__ == "__main__":
-    """
-    Creating a file system structure:
-    root/
-        file1.txt
-        file2.txt
-        subdir1/
-            file3.txt
-            file4.txt
-    """
-    root = Directory("root")
-    file1 = File("file1.txt")
-    file2 = File("file2.txt")
-    subdir1 = Directory("subdir1")
-    file3 = File("file3.txt")
-    file4 = File("file4.txt")
+    # Client expects to work with objects of type Shape
 
-    subdir1.add(file3)
-    subdir1.add(file4)
-    root.add(file1)
-    root.add(file2)
-    root.add(subdir1)
+    # Create a legacy rectangle
+    legacy = LegacyRectangle(10, 20, 30, 40)
 
-    # Display the entire structure
-    root.display()
+    # Wrap it in an adapter to make it compatible with the Shape interface
+    adapted_shape = RectangleAdapter(legacy)
 
-    """
-    Output:
-    Directory: root
-      File: file1.txt
-      File: file2.txt
-      Directory: subdir1
-        File: file3.txt
-        File: file4.txt
-    """
+    print("Client: I'm expecting to use a Shape interface...")
+    adapted_shape.draw()  # Output: Drawing rectangle from (10, 20) to (30, 40)
+
+    # Now we can use LegacyRectangle in systems that expect Shape!
